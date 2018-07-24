@@ -1,0 +1,4 @@
+flask==1.0.2
+fints==0.3.0
+dkb_robo==0.8.1
+python-stdnum==1.9

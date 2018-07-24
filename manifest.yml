@@ -1,0 +1,8 @@
+applications:
+- name: fintsproxy
+  disk_quota: 1G
+  instances: 1
+  memory: 256M
+  routes:
+  - route: fintsproxy.eu-gb.mybluemix.net
+  stack: cflinuxfs2
