@@ -49,7 +49,6 @@ def balance():
 
 @app.route("/api/transactions")
 def api_transactions():
-    days = request.args.get('days')
     user = request.headers.get('user')
     pin = request.headers.get('pin')
     iban_num = request.args.get('iban')
@@ -71,13 +70,15 @@ def api_transactions():
         pin,
         url
     )
-    date_N_days_ago = datetime.now() - timedelta(days=int(days))
-    statements = f.get_statement(SEPAAccount(iban_num, bic, iban_num[12:], '', blz), date_N_days_ago, date.today())
+    today = date.today()
+    first_day = today.replace(day=1)
+    transaction = f.get_transactions(SEPAAccount(iban_num, bic, iban_num[12:], '', blz), first_day, today)
     result = []
-    for transaction in statements:
+    for transaction in reversed(transaction):
         result.append({'date': transaction.data['date'], 'amount': str(transaction.data['amount'].amount),
                        'applicant_name': transaction.data['applicant_name'],
                        'purpose': transaction.data['purpose'], 'posting_text': transaction.data['posting_text']})
+    f.deconstruct()
     return jsonify(result)
 
 
@@ -89,13 +90,13 @@ def api_creditcard():
         abort(403)
     if not pin:
         abort(403)
-    days = request.args.get('days')
-    date_N_days_ago = datetime.now() - timedelta(days=int(days))
+    today = date.today()
+    first_day = today.replace(day=1)
     account = request.args.get('account')
     with DKBRobo(user, pin) as dkb:
         accounts = dkb.account_dic
         link = accounts[int(account)]['transactions']
-        tlist = dkb.get_transactions(link, 'creditcard', date_N_days_ago, date.today())
+        tlist = dkb.get_transactions(link, 'creditcard', first_day, today)
         return jsonify({'account': accounts[int(account)]['account'], 'amount': accounts[int(account)]['amount'],
                         'transactions': tlist})
 
