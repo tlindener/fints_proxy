@@ -1,6 +1,6 @@
 FROM armv7/armhf-ubuntu:16.04
 
-MAINTANER Tobias Lindener "tobias.lindener@outlook.com"
+MAINTAINER Tobias Lindener "tobias.lindener@outlook.com"
 
 RUN apt-get update -y && \
     apt-get install -y python-pip python-dev
