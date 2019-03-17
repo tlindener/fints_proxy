@@ -3,17 +3,17 @@ FROM armv7/armhf-ubuntu:16.04
 MAINTAINER Tobias Lindener "tobias.lindener@outlook.com"
 
 RUN apt-get update -y && \
-    apt-get install -y python-pip python-dev python-lxml
+    apt-get install -y python3-pip python3-dev python3-lxml
 
 # We copy just the requirements.txt first to leverage Docker cache
 COPY ./requirements.txt /app/requirements.txt
 
 WORKDIR /app
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+RUN pip3 install --upgrade pip
+RUN pip3 install -r requirements.txt
 
 COPY . /app
 
-ENTRYPOINT [ "python" ]
+ENTRYPOINT [ "python3" ]
 
 CMD [ "fints_proxy.py" ]
